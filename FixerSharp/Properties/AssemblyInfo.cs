@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FixerSharp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Currency conversion using the fixer.io API")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ryan Morrin")]
 [assembly: AssemblyProduct("FixerSharp")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright ©  2015  Ryan Morrin")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
