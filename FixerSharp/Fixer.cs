@@ -1,26 +1,24 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FixerSharp
+﻿namespace FixerSharp
 {
+    using Newtonsoft.Json.Linq;
+    using System;
+    using System.Net;
+
     public class Fixer
     {
-        public static double Convert(string from, string to, double amount)
+        private const string BaseUri = "http://api.fixer.io/";
+
+        public static double Convert(string from, string to, double amount, DateTime? date = null)
         {
-            return GetRate(from, to).Convert(amount);
+            return GetRate(from, to, date).Convert(amount);
         }
 
-        public static ExchangeRate Rate(string from, string to)
+        public static ExchangeRate Rate(string from, string to, DateTime? date = null)
         {
-            return GetRate(from, to);
+            return GetRate(from, to, date);
         }
 
-        private static ExchangeRate GetRate(string from, string to)
+        private static ExchangeRate GetRate(string from, string to, DateTime? date = null)
         {
             from = from.ToUpper();
             to = to.ToUpper();
@@ -31,19 +29,20 @@ namespace FixerSharp
             if (!Symbols.IsValid(to))
                 throw new ArgumentException("Symbol not found for provided currency", "to");
 
-            JObject rates = GetLatestRates();
+            var rates = GetLatestRates(date);
 
             var fromRate = rates.Value<double>(from);
             var toRate = rates.Value<double>(to);
 
-            double rate = toRate / fromRate;
+            var rate = toRate / fromRate;
 
             return new ExchangeRate(from, to, rate);
         }
 
-        private static JObject GetLatestRates()
+        private static JObject GetLatestRates(DateTime? date = null)
         {
-            string url = "http://api.fixer.io/latest";
+            var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
+            var url = string.Format("{0}{1}", BaseUri, dateString);
 
             using (var wc = new WebClient())
             {
