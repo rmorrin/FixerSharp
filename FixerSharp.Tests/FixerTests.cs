@@ -63,6 +63,15 @@ namespace FixerSharp.Tests
         }
 
         [TestMethod]
+        public void Rate_Date_Properties_Contain_Data()
+        {
+            var rate1 = Fixer.Rate(Symbols.GBP, Symbols.EUR, new DateTime(2016, 10, 19));
+            var rate2 = Fixer.Rate(Symbols.GBP, Symbols.EUR, new DateTime(2016, 10, 18));
+
+            Assert.AreNotEqual(rate1.Rate, rate2.Rate);
+        }
+
+        [TestMethod]
         public void Conversion_From_Rate()
         {
             var rate = Fixer.Rate(Symbols.EUR, Symbols.GBP);

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FixerSharp
+﻿namespace FixerSharp
 {
     public class ExchangeRate
     {
@@ -15,11 +9,11 @@ namespace FixerSharp
             Rate = rate;
         }
 
-        public string From { get; private set; }
+        public string From { get; }
 
-        public string To { get; private set; }
+        public string To { get; }
 
-        public double Rate { get; private set; }
+        public double Rate { get; }
 
         public double Convert(double amount)
         {
