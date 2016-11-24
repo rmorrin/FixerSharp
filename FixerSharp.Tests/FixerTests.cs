@@ -60,15 +60,17 @@ namespace FixerSharp.Tests
             Assert.AreNotEqual(rate.From, "");
             Assert.AreNotEqual(rate.To, "");
             Assert.AreNotEqual(rate.Rate, 0);
+            Assert.AreNotEqual(rate.Date, default(DateTime));
         }
 
         [TestMethod]
-        public void Rate_Date_Properties_Contain_Data()
+        public void Rates_For_Previous_Dates_Contain_Different_Data()
         {
             var rate1 = Fixer.Rate(Symbols.GBP, Symbols.EUR, new DateTime(2016, 10, 19));
             var rate2 = Fixer.Rate(Symbols.GBP, Symbols.EUR, new DateTime(2016, 10, 18));
 
             Assert.AreNotEqual(rate1.Rate, rate2.Rate);
+            Assert.AreNotEqual(rate1.Date, rate2.Date);
         }
 
         [TestMethod]

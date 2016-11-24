@@ -1,9 +1,9 @@
-﻿namespace FixerSharp
-{
-    using Newtonsoft.Json.Linq;
-    using System;
-    using System.Net;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Net;
 
+namespace FixerSharp
+{
     public class Fixer
     {
         private const string BaseUri = "http://api.fixer.io/";
@@ -29,17 +29,25 @@
             if (!Symbols.IsValid(to))
                 throw new ArgumentException("Symbol not found for provided currency", "to");
 
-            var rates = GetLatestRates(date);
+            // Get data from Fixer API
+            var fixerData = GetFixerData(date);
 
+            // Parse rates
+            var rates = fixerData.Value<JObject>("rates");
             var fromRate = rates.Value<double>(from);
             var toRate = rates.Value<double>(to);
 
             var rate = toRate / fromRate;
 
-            return new ExchangeRate(from, to, rate);
+            // Parse returned date
+            // Note: This may be different to the requested date as Fixer will return the closest available
+            var returnedDate = DateTime.ParseExact(fixerData.Value<string>("date"), "yyyy-MM-dd",
+                System.Globalization.CultureInfo.InvariantCulture);
+
+            return new ExchangeRate(from, to, rate, returnedDate);
         }
 
-        private static JObject GetLatestRates(DateTime? date = null)
+        private static JObject GetFixerData(DateTime? date = null)
         {
             var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
             var url = string.Format("{0}{1}", BaseUri, dateString);
@@ -53,7 +61,7 @@
                 var baseSymbol = root.Value<string>("base");
                 rates.Add(baseSymbol, 1.00);
 
-                return rates;
+                return root;
             }
         }
     }
