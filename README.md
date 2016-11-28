@@ -25,7 +25,7 @@ double oneHundredUsdInGbp = Fixer.Convert(Symbols.USD, Symbols.GBP, 100);
 double oneThousandEurInUsd = Fixer.Convert("EUR", "USD", 1000);
 ```
 
-If you wish to perform additional conversions, the current exchange rate can be saved and used to convert:
+If you wish to perform additional conversions, the current exchange rate can be retrieved and used to convert:
 
 ```c#
 using FixerSharp;
@@ -39,7 +39,26 @@ double oneThousandUsdInGbp = rateUsdGbp.Convert(1000);
 double tenThousandUsdInGbp = rateUsdGbp.Convert(10000);
 ```
 
-*This method is recommended if you have more than one conversion to perform, as data is only retrieved from Fixer.io once.* 
+*This method is recommended if you have more than one conversion to perform, as data is only retrieved from the fixer API once.*
+
+Both `Convert` and `Rate` have date support, allowing access to historical currency data for any day since 1999.
+
+```c#
+using FixerSharp;
+
+...
+
+// Calculates percentage difference of 100 GBP in USD between Nov 2015/16
+double amount = Fixer.Convert(Symbols.GBP, Symbols.USD, 100, new DateTime(2016, 11, 01));
+double amountPrevious = Fixer.Convert(Symbols.GBP, Symbols.USD, 100, new DateTime(2015, 11, 01));
+
+double percentDifference = (amount - amountPrevious) / amountPrevious * 100; // -20.2952... :(
+
+// Get the exchange rate for EUR => GBP on 1st January 2015
+ExchangeRate historicalRate = Fixer.Rate(Symbols.EUR, Symbols.GBP);
+
+double historicalConversion = historicalRate.Convert(500);
+```
 
 ## Acknowledgements
 
