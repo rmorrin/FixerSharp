@@ -14,6 +14,8 @@ Install-Package FixerSharp
 
 ## Usage
 
+### Convert
+
 Perform a one-off conversion between two currencies:
 
 ```c#
@@ -24,6 +26,8 @@ using FixerSharp;
 double oneHundredUsdInGbp = Fixer.Convert(Symbols.USD, Symbols.GBP, 100);
 double oneThousandEurInUsd = Fixer.Convert("EUR", "USD", 1000);
 ```
+
+### Exchange Rate
 
 If you wish to perform additional conversions, the current exchange rate can be retrieved and used to convert:
 
@@ -40,6 +44,8 @@ double tenThousandUsdInGbp = rateUsdGbp.Convert(10000);
 ```
 
 *This method is recommended if you have more than one conversion to perform, as data is only retrieved from the fixer API once.*
+
+### Previous Data
 
 Both `Convert` and `Rate` have date support, allowing access to historical currency data for any day since 1999.
 
