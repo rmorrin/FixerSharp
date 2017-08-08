@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace FixerSharp
@@ -44,8 +45,13 @@ namespace FixerSharp
             var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
             var url = string.Format("{0}{1}", BaseUri, dateString);
 
-            using (var wc = new WebClient())
-                return ParseData(wc.DownloadString(url), from, to);
+            using (var client = new HttpClient())
+            {
+                var response = client.GetAsync(url).Result;
+                response.EnsureSuccessStatusCode();
+
+                return ParseData(response.Content.ReadAsStringAsync().Result, from, to);
+            }
         }
 
         private static async Task<ExchangeRate> GetRateAsync(string from, string to, DateTime? date = null)
@@ -63,8 +69,13 @@ namespace FixerSharp
             var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
             var url = string.Format("{0}{1}", BaseUri, dateString);
 
-            using (var wc = new WebClient())
-                return ParseData(await wc.DownloadStringTaskAsync(url), from, to);
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                return ParseData(await response.Content.ReadAsStringAsync(), from, to);
+            }
         }
 
         private static ExchangeRate ParseData(string data, string from, string to)
