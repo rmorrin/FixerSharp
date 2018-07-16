@@ -6,6 +6,9 @@ namespace FixerSharp.Tests
     [TestClass]
     public class FixerTests
     {
+        [TestInitialize]
+        public void TestInitialize() => Fixer.SetApiKey("API_KEY_HERE");
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void Invalid_From_Symbol_Throws_Exception()
@@ -85,6 +88,15 @@ namespace FixerSharp.Tests
             Assert.AreNotEqual(rate.Convert(100000), 0);
             Assert.AreNotEqual(rate.Convert(10000000), 0);
             Assert.AreNotEqual(rate.Convert(100000000), 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Invalid_Api_Key_ThrowsException()
+        {
+            Fixer.SetApiKey(null);
+
+            Fixer.Convert(Symbols.USD, Symbols.EUR, 100);
         }
     }
 }

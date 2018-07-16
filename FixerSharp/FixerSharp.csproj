@@ -10,7 +10,7 @@
     <PackageLicenseUrl>https://github.com/rmorrin/FixerSharp/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/rmorrin/FixerSharp</PackageProjectUrl>
     <PackageTags>currency conversion exchange rate fixer.io</PackageTags>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
