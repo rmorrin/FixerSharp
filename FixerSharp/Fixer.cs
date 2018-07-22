@@ -1,14 +1,21 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Net;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace FixerSharp
 {
     public class Fixer
     {
-        private const string BaseUri = "http://api.fixer.io/";
+        private const string BaseUri = "http://data.fixer.io/api/";
+
+        private static string _apiKey;
+
+        private static string ApiKey
+        {
+            get => !string.IsNullOrWhiteSpace(_apiKey) ? _apiKey : throw new InvalidOperationException("Fixer.io now requires an API key! Call .SetApiKey(\"key\") first");
+            set => _apiKey = value;
+        }
 
         public static double Convert(string from, string to, double amount, DateTime? date = null)
         {
@@ -30,6 +37,11 @@ namespace FixerSharp
             return await GetRateAsync(from, to, date);
         }
 
+        public static void SetApiKey(string apiKey)
+        {
+            ApiKey = apiKey;
+        }
+
         private static ExchangeRate GetRate(string from, string to, DateTime? date = null)
         {
             from = from.ToUpper();
@@ -41,9 +53,7 @@ namespace FixerSharp
             if (!Symbols.IsValid(to))
                 throw new ArgumentException("Symbol not found for provided currency", "to");
 
-            // Get data from Fixer API
-            var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
-            var url = string.Format("{0}{1}", BaseUri, dateString);
+            var url = GetFixerUrl(date);
 
             using (var client = new HttpClient())
             {
@@ -65,9 +75,7 @@ namespace FixerSharp
             if (!Symbols.IsValid(to))
                 throw new ArgumentException("Symbol not found for provided currency", "to");
 
-            // Get data from Fixer API
-            var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
-            var url = string.Format("{0}{1}", BaseUri, dateString);
+            var url = GetFixerUrl(date);
 
             using (var client = new HttpClient())
             {
@@ -83,11 +91,7 @@ namespace FixerSharp
             // Parse JSON
             var root = JObject.Parse(data);
 
-            // Exchange base is not included in rates, add this manually
             var rates = root.Value<JObject>("rates");
-            var baseSymbol = root.Value<string>("base");
-            rates.Add(baseSymbol, 1.00);
-
             var fromRate = rates.Value<double>(from);
             var toRate = rates.Value<double>(to);
 
@@ -100,5 +104,13 @@ namespace FixerSharp
 
             return new ExchangeRate(from, to, rate, returnedDate);
         }
+
+        private static string GetFixerUrl(DateTime? date = null)
+        {
+            var dateString = date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "latest";
+
+            return $"{BaseUri}{dateString}?access_key={ApiKey}";
+        }
+
     }
 }

@@ -14,6 +14,31 @@ Install-Package FixerSharp
 
 ## Usage
 
+### Configure API Access
+
+The fixer.io service now requires an API key for all operations. A free key allowing up to 1000 requests/month can be obtained by registering for a free account on the [fixer.io website](https://fixer.io/signup/free).
+
+Your API key must be configured through the `SetApiKey` method before performing any conversion operations. This should only be required once during application startup (or equivalent):
+
+```c#
+using FixerSharp;
+
+...
+
+public class Startup
+{
+    ...
+
+    public void Configure(IApplicationBuilder app)
+    {
+        ...
+
+        // One-time call to SetApiKey
+        Fixer.SetApiKey("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    }
+}
+```
+
 ### Convert
 
 Perform a one-off conversion between two currencies:
@@ -24,7 +49,7 @@ using FixerSharp;
 ...
 
 double oneHundredUsdInGbp = Fixer.Convert(Symbols.USD, Symbols.GBP, 100);
-double oneThousandEurInUsd = Fixer.Convert("EUR", "USD", 1000);
+double oneThousandEurInUsd = await Fixer.ConvertAsync("EUR", "USD", 1000);
 ```
 
 ### Exchange Rate
@@ -41,6 +66,11 @@ ExchangeRate rateUsdGbp = Fixer.Rate(Symbols.USD, Symbols.GBP);
 double oneHundredUsdInGbp = rateUsdGbp.Convert(100);
 double oneThousandUsdInGbp = rateUsdGbp.Convert(1000);
 double tenThousandUsdInGbp = rateUsdGbp.Convert(10000);
+
+ExchangeRate rateGbpEur = await Fixer.RateAsync(Symbols.GBP, Symbols.EUR);
+
+double tenGbpInEur = rateGbpEur.Convert(10);
+double oneHundredGbpInEur rateGbpEur.Convert(100);
 ```
 
 *This method is recommended if you have more than one conversion to perform, as data is only retrieved from the fixer API once.*
