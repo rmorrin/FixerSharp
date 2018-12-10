@@ -98,4 +98,4 @@ double historicalConversion = historicalRate.Convert(500);
 
 ## Acknowledgements
 
-This makes use of the [fixer-io](https://github.com/hakanensari/fixer-io) project to provide up-to-date exchange rates.
+This makes use of the [fixer](https://github.com/fixerAPI/fixer) project to provide up-to-date exchange rates.
