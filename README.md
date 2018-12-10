@@ -70,7 +70,7 @@ double tenThousandUsdInGbp = rateUsdGbp.Convert(10000);
 ExchangeRate rateGbpEur = await Fixer.RateAsync(Symbols.GBP, Symbols.EUR);
 
 double tenGbpInEur = rateGbpEur.Convert(10);
-double oneHundredGbpInEur rateGbpEur.Convert(100);
+double oneHundredGbpInEur = rateGbpEur.Convert(100);
 ```
 
 *This method is recommended if you have more than one conversion to perform, as data is only retrieved from the fixer API once.*
